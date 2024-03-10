@@ -8,9 +8,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.mantushnikita.disneyherocompose.ui.hero.HeroScreen
 import com.mantushnikita.disneyherocompose.ui.list.ListScreen
+import com.mantushnikita.disneyherocompose.ui.login.LoginScreen
+import com.mantushnikita.disneyherocompose.ui.singup.SingUpScreen
 
 const val LIST_SCREEN = "ListScreen"
 const val HERO_SCREEN = "HeroScreen"
+const val LOGIN_SCREEN = "LoginScreen"
+const val SINGUP_SCREEN = "SingUpScreen"
 
 @Composable
 fun NavigationGraph(
@@ -24,6 +28,12 @@ fun NavigationGraph(
             type = NavType.IntType
         })) {
             HeroScreen(it.arguments?.getInt("id", 0) ?: 0)
+        }
+        composable(LOGIN_SCREEN){
+            LoginScreen(navigationController)
+        }
+        composable(SINGUP_SCREEN){
+            SingUpScreen(navigationController)
         }
     }
 }

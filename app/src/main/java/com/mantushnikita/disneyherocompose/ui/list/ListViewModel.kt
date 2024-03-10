@@ -14,15 +14,33 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     private val repository: HeroRepository
 ) : ViewModel() {
-    val listHero = MutableLiveData<List<Hero>>()
+    //val listHero = MutableLiveData<List<Hero>>()
 
-    fun loadListHeroes() {
+    val state = MutableLiveData<ListScreenState>()
+
+    fun processAction(action: ListScreenAction){
+        when(action){
+            is ListScreenAction.Init ->{
+                loadListHeroes()
+            }
+        }
+    }
+
+    private fun loadListHeroes() {
+        state.value = ListScreenState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             val response = repository.getHeroes()
             if (response.isSuccessful) {
-                response.body()?.data?.let { list ->
-                    listHero.postValue(list)
+                val heroList =response.body()?.data
+                if (heroList != null){
+                    state.postValue(ListScreenState.Loaded(heroList))
                 }
+                else{
+                    state.postValue(ListScreenState.Error("Hero list no found"))
+                }
+            }
+            else{
+                state.postValue(ListScreenState.Error("Network error"))
             }
         }
     }
