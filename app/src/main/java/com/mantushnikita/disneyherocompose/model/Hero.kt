@@ -16,7 +16,8 @@ data class Hero(
     val _id: Int,
     val name: String,
     val imageUrl: String,
-    val filmContent: ArrayList<FilmContent>
+    val filmContent: ArrayList<FilmContent>,
+    var isFavorite: Boolean = false
 )
 data class FilmContent(
     val name: String,

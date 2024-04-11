@@ -14,7 +14,6 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     private val repository: HeroRepository
 ) : ViewModel() {
-    //val listHero = MutableLiveData<List<Hero>>()
 
     val state = MutableLiveData<ListScreenState>()
 

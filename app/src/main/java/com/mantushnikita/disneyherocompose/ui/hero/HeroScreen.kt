@@ -1,7 +1,9 @@
 package com.mantushnikita.disneyherocompose.ui.hero
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,23 +11,30 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.mantushnikita.disneyherocompose.R
 import com.mantushnikita.disneyherocompose.model.Hero
 import com.mantushnikita.disneyherocompose.ui.theme.Purple80
 
@@ -35,17 +44,20 @@ fun HeroScreen(id: Int, viewModel: HeroViewModel = hiltViewModel()) {
     heroScreenState(state = viewModel.state)
 
 }
+
 @Composable
-fun heroScreenState(state: MutableLiveData<HeroState>){
+fun heroScreenState(state: MutableLiveData<HeroState>) {
     state.observeAsState().value?.let {
-        when(it){
-            is HeroState.HeroLoaded ->{
-                createHero(hero = it.hero)
+        when (it) {
+            is HeroState.HeroLoaded -> {
+                CreateHero(hero = it.hero)
             }
-            is HeroState.Error ->{
+
+            is HeroState.Error -> {
                 Toast.makeText(LocalContext.current, it.error, Toast.LENGTH_LONG).show()
             }
-            is HeroState.Loading ->{
+
+            is HeroState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -59,19 +71,51 @@ fun heroScreenState(state: MutableLiveData<HeroState>){
         }
     }
 }
+
 @Composable
-fun createHero(hero: Hero){
+fun CreateHero(hero: Hero, viewModel: HeroViewModel = hiltViewModel()) {
+
+    var isFavorite by remember { mutableStateOf(hero.isFavorite) }
+
     Column {
-        AsyncImage(
-            model = hero.imageUrl, contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
-            contentScale = ContentScale.Crop
-        )
+        Box(modifier = Modifier.fillMaxWidth()) {
+
+            val interactionSource = remember { MutableInteractionSource() }
+
+            val image: Painter = if (!isFavorite) {
+                painterResource(id = R.drawable.ic_favorite)
+            } else {
+                painterResource(id = R.drawable.ic_favorite_active)
+            }
+            AsyncImage(
+                model = hero.imageUrl, contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                contentScale = ContentScale.Crop
+
+            )
+            Image(painter = image, contentDescription = "favorite",
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 12.dp, end = 12.dp)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null
+                    ) {
+                        if (!isFavorite) {
+                            viewModel.addHero(hero)
+                        }
+                        else{
+                            viewModel.deleteHero(hero._id)
+                        }
+                        isFavorite = !isFavorite
+                    })
+
+        }
 
         Text(
-            text = hero.name ?: "", fontSize = 34.sp, fontWeight = FontWeight.Bold,
+            text = hero.name, fontSize = 34.sp, fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 16.dp, top = 10.dp)
         )
 

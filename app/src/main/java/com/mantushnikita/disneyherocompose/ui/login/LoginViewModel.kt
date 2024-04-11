@@ -5,29 +5,29 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.FirebaseError
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.mantushnikita.disneyherocompose.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-
-): ViewModel() {
+    private val repository: LoginRepository
+) : ViewModel() {
 
     val state = MutableLiveData<LoginState>()
-    fun processAction(action: LoginAction){
-        when(action){
-            is LoginAction.OnLoginClick->{
+    fun processAction(action: LoginAction) {
+        when (action) {
+            is LoginAction.OnLoginClick -> {
                 login(action.email, action.registration)
             }
         }
     }
-    private fun login(email: String, password:String){
-        Firebase.auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
+
+    private fun login(email: String, password: String) {
+        repository.login(email, password, {
             state.value = LoginState.SuccessfulLogin
-        }
-            .addOnFailureListener{
-            state.value = LoginState.Error(it.localizedMessage)
-        }
+        }, {
+            state.value = LoginState.Error(it)
+        })
     }
 }

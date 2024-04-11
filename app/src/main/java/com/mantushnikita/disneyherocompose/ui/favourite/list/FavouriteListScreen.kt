@@ -1,4 +1,4 @@
-package com.mantushnikita.disneyherocompose.ui.list
+package com.mantushnikita.disneyherocompose.ui.favourite.list
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -9,14 +9,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -32,6 +35,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mantushnikita.disneyherocompose.R
 import com.mantushnikita.disneyherocompose.navigation.FAVOURITE_SCREEN
+import com.mantushnikita.disneyherocompose.navigation.LIST_SCREEN
 import com.mantushnikita.disneyherocompose.navigation.LOGIN_SCREEN
 import com.mantushnikita.disneyherocompose.navigation.SINGUP_SCREEN
 import com.mantushnikita.disneyherocompose.ui.theme.Purple80
@@ -39,11 +43,14 @@ import com.mantushnikita.disneyherocompose.util.custom.IconWithText
 import com.mantushnikita.disneyherocompose.util.list.SetList
 
 @Composable
-fun ListScreen(
+fun FavouriteListScreen(
     navigationController: NavHostController,
-    viewModel: ListViewModel = hiltViewModel()
+    viewModel: FavouriteListViewModel = hiltViewModel()
 ) {
-    viewModel.processAction(ListScreenAction.Init)
+    LaunchedEffect(Unit) {
+        viewModel.processAction(FavouriteListAction.Init)
+
+    }
     var currentUserEmail = Firebase.auth.currentUser?.email
 
     Image(
@@ -52,9 +59,10 @@ fun ListScreen(
     )
     Column {
         Row {
-            Button( onClick = { navigationController.navigate(
-                FAVOURITE_SCREEN) }) {
-                Text(text = "Favourite")
+            Button(onClick = { navigationController.navigate(
+                LIST_SCREEN
+            ) }) {
+                Text(text = "All")
             }
             if (currentUserEmail != null) {
                 Button(onClick = {
@@ -69,35 +77,45 @@ fun ListScreen(
                 }
             }
 
-            Button(colors = ButtonDefaults.buttonColors(Color.Red), onClick = { navigationController.navigate(SINGUP_SCREEN) }) {
+            Button(colors = ButtonDefaults.buttonColors(Color.Red), onClick = {
+                navigationController.navigate(
+                    SINGUP_SCREEN
+                )
+            }) {
                 Text(text = "SingUp")
             }
             Text(
                 text = currentUserEmail ?: "",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(alignment = CenterVertically),
+                    .align(alignment = Alignment.CenterVertically),
                 textAlign = TextAlign.End,
                 fontSize = 12.sp,
                 color = Color.White
             )
         }
-        Row(modifier = Modifier.padding(top = 15.dp)) {
-            IconWithText(iconResourceId = R.drawable.ic_all, text = "All")
-            IconWithText(iconResourceId = R.drawable.ic_favorite, text = "Favorite")
+        Row(modifier = Modifier.padding(top = 30.dp)) {
+            IconWithText(
+                iconResourceId = R.drawable.ic_all,
+                text = "All"
+            )
+            IconWithText(
+                iconResourceId = R.drawable.ic_favorite,
+                text = "Favorite"
+            )
         }
-        ListScreenState(state = viewModel.state, navigationController = navigationController)
+        FavouriteScreenListState(state = viewModel.state, navigationController = navigationController)
     }
 }
 
 @Composable
-fun ListScreenState(
-    state: MutableLiveData<ListScreenState>,
+fun FavouriteScreenListState(
+    state: MutableLiveData<FavouriteListState>,
     navigationController: NavHostController
 ) {
     state.observeAsState().value?.let {
         when (it) {
-            is ListScreenState.Loading -> {
+            is FavouriteListState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -108,16 +126,15 @@ fun ListScreenState(
                     )
                 }
             }
-
-            is ListScreenState.Loaded -> {
-                SetList(list = it.heroList, navigationController = navigationController)
+            is FavouriteListState.Loaded -> {
+                SetList(
+                    list = it.heroList,
+                    navigationController = navigationController
+                )
             }
-
-            is ListScreenState.Error -> {
-                Toast.makeText(LocalContext.current, it.message, Toast.LENGTH_LONG).show()
+            is FavouriteListState.Error -> {
+                Toast.makeText(LocalContext.current, it.error, Toast.LENGTH_LONG).show()
             }
         }
     }
 }
-
-
