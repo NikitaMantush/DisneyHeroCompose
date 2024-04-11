@@ -2,9 +2,6 @@ package com.mantushnikita.disneyherocompose.ui.login
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.FirebaseError
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.mantushnikita.disneyherocompose.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

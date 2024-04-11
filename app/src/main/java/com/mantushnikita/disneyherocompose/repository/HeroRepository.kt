@@ -2,11 +2,8 @@ package com.mantushnikita.disneyherocompose.repository
 
 import com.mantushnikita.disneyherocompose.db.HeroDao
 import com.mantushnikita.disneyherocompose.db.HeroEntity
-import com.mantushnikita.disneyherocompose.model.FilmContent
 import com.mantushnikita.disneyherocompose.model.Hero
 import com.mantushnikita.disneyherocompose.network.Api
-import kotlinx.coroutines.runBlocking
-import java.util.Date
 import javax.inject.Inject
 
 class HeroRepository @Inject constructor(

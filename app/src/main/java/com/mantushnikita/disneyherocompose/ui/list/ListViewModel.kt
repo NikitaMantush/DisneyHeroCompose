@@ -3,7 +3,6 @@ package com.mantushnikita.disneyherocompose.ui.list
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mantushnikita.disneyherocompose.model.Hero
 import com.mantushnikita.disneyherocompose.repository.HeroRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -3,7 +3,6 @@ package com.mantushnikita.disneyherocompose.db
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mantushnikita.disneyherocompose.model.FilmContent
 
 @Entity(tableName = "HeroEntity")
 data class HeroEntity(

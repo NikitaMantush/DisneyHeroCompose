@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,7 +31,6 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mantushnikita.disneyherocompose.R
-import com.mantushnikita.disneyherocompose.navigation.FAVOURITE_SCREEN
 import com.mantushnikita.disneyherocompose.navigation.LIST_SCREEN
 import com.mantushnikita.disneyherocompose.navigation.LOGIN_SCREEN
 import com.mantushnikita.disneyherocompose.navigation.SINGUP_SCREEN
